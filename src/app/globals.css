@@ -1,0 +1,405 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   Epocharium — Warm Marble Museum / Liquid-Glass
+   Day default: soft stone ivory · charcoal ink · bronze accents
+   Evening: restrained charcoal gallery (same family, cream placards)
+   REJECTED: Abyssal Iridescence (teal/violet/amber aurora) + prior brass-heavy hall
+   ========================================================= */
+
+:root {
+  /* RGB channels for Tailwind opacity modifiers — LIGHT / day default */
+  --c-ink: 28 25 23;           /* #1c1917 charcoal ink */
+  --c-hall: 236 230 220;       /* warm stone wash */
+  --c-panel: 255 253 249;      /* near-white cream panel */
+  --c-brass: 146 64 14;         /* #92400e museum bronze — ≥4.5:1 on hall ivory */
+  --c-brass-dim: 120 53 15;    /* deeper bronze */
+  --c-marble: 28 25 23;        /* text on ivory = charcoal */
+  --c-parchment: 247 243 235;  /* #f7f3eb soft stone ivory */
+  --c-mist: 87 83 78;          /* stone-600 body muted */
+  --c-cyan: 100 116 139;       /* cool slate (was neon cyan) */
+  --c-violet: 71 85 105;       /* cool slate secondary (was violet) */
+  --c-amber: 180 83 9;         /* bronze family */
+  --c-rose: 120 113 108;       /* warm stone */
+
+  --museum-bg: #f7f3eb;
+  --museum-fg: #1c1917;
+  --museum-ink: #1c1917;
+  --museum-hall: #ece6dc;
+  --museum-marble: #1c1917;
+  --museum-parchment: #f7f3eb;
+  --museum-muted: #57534e;
+  --museum-brass: #92400e;
+  --museum-brass-dim: #78350f;
+  --museum-violet: #475569;    /* remapped → cool slate */
+  --museum-amber: #92400e;
+  --museum-cyan: #64748b;
+  --museum-rose: #78716c;
+  /* Cool slate glass — frosted translucent slate-tint, not teal/violet neon */
+  --museum-panel: rgba(248, 250, 252, 0.62);
+  --museum-panel-solid: #fffcf7;
+  --museum-border: rgba(71, 85, 105, 0.22);
+  --museum-border-soft: rgba(28, 25, 23, 0.1);
+  --glass-blur: 18px;
+  --glass-shine: rgba(255, 255, 255, 0.72);
+  /* Liquid blobs: warm ivory · soft bronze · cool slate · stone */
+  --blob-a: rgba(180, 83, 9, 0.14);
+  --blob-b: rgba(100, 116, 139, 0.16);
+  --blob-c: rgba(120, 113, 108, 0.12);
+  --blob-d: rgba(214, 211, 209, 0.45);
+  --vignette-edge: rgba(68, 64, 60, 0.12);
+}
+
+/* Evening / charcoal gallery — same family, cream placards */
+html.dark {
+  --c-ink: 250 248 244;        /* cream text */
+  --c-hall: 28 25 23;
+  --c-panel: 41 37 36;
+  --c-brass: 217 119 6;        /* soft bronze glow on dark */
+  --c-brass-dim: 180 83 9;
+  --c-marble: 250 248 244;
+  --c-parchment: 41 37 36;
+  --c-mist: 168 162 158;
+  --c-cyan: 148 163 184;
+  --c-violet: 148 163 184;
+  --c-amber: 217 119 6;
+  --c-rose: 168 162 158;
+
+  --museum-bg: #1c1917;
+  --museum-fg: #faf8f4;
+  --museum-ink: #1c1917;
+  --museum-hall: #292524;
+  --museum-marble: #faf8f4;
+  --museum-parchment: #f5f0e6; /* cream placard tone */
+  --museum-muted: #a8a29e;
+  --museum-brass: #d97706;
+  --museum-brass-dim: #b45309;
+  --museum-violet: #94a3b8;
+  --museum-amber: #d97706;
+  --museum-cyan: #94a3b8;
+  --museum-rose: #a8a29e;
+  --museum-panel: rgba(68, 64, 60, 0.55);
+  --museum-panel-solid: #292524;
+  --museum-border: rgba(180, 83, 9, 0.28);
+  --museum-border-soft: rgba(250, 248, 244, 0.1);
+  --glass-shine: rgba(255, 255, 255, 0.08);
+  --blob-a: rgba(180, 83, 9, 0.18);
+  --blob-b: rgba(100, 116, 139, 0.2);
+  --blob-c: rgba(168, 162, 158, 0.12);
+  --blob-d: rgba(41, 37, 36, 0.5);
+  --vignette-edge: rgba(0, 0, 0, 0.45);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--museum-bg);
+  color: var(--museum-fg);
+  min-height: 100vh;
+}
+
+/* ---------- Liquid museum shell (mesh + flowing wash) ---------- */
+.museum-hall {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--museum-bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% -10%, var(--blob-a), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 90% 5%, var(--blob-b), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 110%, var(--blob-c), transparent 55%),
+    radial-gradient(ellipse 50% 35% at 70% 60%, var(--blob-d), transparent 50%);
+  background-size: 140% 140%, 140% 140%, 140% 140%, 140% 140%;
+  background-position: 0% 40%, 100% 0%, 50% 100%, 80% 50%;
+  animation: mesh-shift 30s ease-in-out infinite;
+}
+
+@keyframes mesh-shift {
+  0%,
+  100% {
+    background-position: 0% 40%, 100% 0%, 50% 100%, 80% 50%;
+  }
+  50% {
+    background-position: 100% 60%, 0% 40%, 30% 20%, 20% 80%;
+  }
+}
+
+.liquid-blobs {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.liquid-blobs .blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.liquid-blobs .blob-a {
+  width: min(52vw, 520px);
+  height: min(52vw, 520px);
+  top: -12%;
+  left: -8%;
+  background: var(--blob-a);
+  animation: liquid-drift 22s ease-in-out infinite;
+}
+
+.liquid-blobs .blob-b {
+  width: min(48vw, 480px);
+  height: min(48vw, 480px);
+  top: 10%;
+  right: -10%;
+  background: var(--blob-b);
+  animation: liquid-drift-alt 28s ease-in-out infinite;
+}
+
+.liquid-blobs .blob-c {
+  width: min(40vw, 400px);
+  height: min(40vw, 400px);
+  bottom: -8%;
+  left: 30%;
+  background: var(--blob-c);
+  animation: liquid-drift 26s ease-in-out infinite reverse;
+}
+
+.liquid-blobs .blob-d {
+  width: min(36vw, 360px);
+  height: min(36vw, 360px);
+  bottom: 20%;
+  right: 15%;
+  background: var(--blob-d);
+  animation: liquid-drift-alt 24s ease-in-out infinite reverse;
+}
+
+@keyframes liquid-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(4%, -6%) scale(1.08);
+  }
+  66% {
+    transform: translate(-5%, 3%) scale(0.94);
+  }
+}
+
+@keyframes liquid-drift-alt {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate(-7%, 5%) scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .museum-hall,
+  .liquid-blobs .blob {
+    animation: none !important;
+  }
+}
+
+.museum-vignette::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 42%, var(--vignette-edge) 100%);
+}
+
+/* ---------- Liquid-glass panels / placards (slate glass) ---------- */
+.placard,
+.glass-panel {
+  background: var(--museum-panel);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.15);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.15);
+  border: 1px solid var(--museum-border);
+  border-radius: 1rem;
+  box-shadow:
+    0 8px 32px rgba(28, 25, 23, 0.08),
+    inset 0 1px 0 var(--glass-shine),
+    0 0 0 1px rgba(71, 85, 105, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Soft slate / bronze edge shimmer — no teal/violet aurora */
+.placard::before,
+.glass-panel::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(71, 85, 105, 0.08) 100%
+  );
+  opacity: 0.9;
+}
+
+html.dark .placard,
+html.dark .glass-panel {
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 var(--glass-shine),
+    0 0 0 1px rgba(180, 83, 9, 0.06);
+  /* cream placard option on dark: slight warm fill */
+  background: color-mix(in srgb, rgba(245, 240, 230, 0.08) 40%, var(--museum-panel));
+}
+
+.wayfinding-chip {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  color: var(--museum-brass);
+}
+
+.exhibit-frame {
+  border: 1px solid var(--museum-border);
+  border-radius: 1rem;
+  background: rgba(28, 25, 23, 0.92);
+  /* Always-dark vitrine: cream placard tokens so text-museum-marble/mist stay readable in daylight */
+  --c-marble: 250 248 244;
+  --c-mist: 214 211 209; /* stone-300 — ≥4.5:1 on near-black chips */
+  --c-brass: 251 191 36; /* amber-400 — Pause / chrome on black */
+  --museum-brass: #fbbf24;
+  color: rgb(250 248 244);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.45),
+    0 12px 40px rgba(28, 25, 23, 0.2),
+    0 0 0 1px rgba(71, 85, 105, 0.08);
+}
+
+html.dark .exhibit-frame {
+  background: rgba(12, 10, 9, 0.92);
+}
+
+.prose-museum h2 {
+  @apply font-display text-2xl mt-10 mb-3 text-museum-brass;
+}
+.prose-museum p {
+  @apply text-base leading-relaxed text-museum-mist mb-4;
+}
+html.dark .prose-museum p {
+  color: rgb(var(--c-mist) / 0.92);
+}
+
+
+/* ---------- Skip to main (keyboard) ---------- */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.skip-link:focus {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  border-radius: 0.75rem;
+  background: var(--museum-brass);
+  color: #fffaf3;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.25);
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--museum-brass);
+  outline-offset: 3px;
+}
+
+/* Gallery floor line — bronze → cool slate (sparing bronze) */
+.hall-floor-line {
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(71, 85, 105, 0.35),
+    var(--museum-brass),
+    rgba(71, 85, 105, 0.35),
+    transparent
+  );
+  opacity: 0.5;
+}
+
+.glass-nav {
+  background: color-mix(in srgb, var(--museum-bg) 78%, transparent);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border-bottom: 1px solid var(--museum-border-soft);
+  box-shadow: 0 4px 24px rgba(28, 25, 23, 0.06);
+}
+
+html.dark .glass-nav {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+.glass-footer {
+  background: color-mix(in srgb, var(--museum-panel-solid) 78%, transparent);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  border-top: 1px solid var(--museum-border-soft);
+}
+
+/* Soft liquid CTA — bronze + slate glass */
+.liquid-cta {
+  position: relative;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(
+    120deg,
+    rgba(180, 83, 9, 0.12),
+    rgba(100, 116, 139, 0.1),
+    rgba(214, 211, 209, 0.35)
+  );
+  border: 1px solid var(--museum-border);
+  box-shadow: inset 0 1px 0 var(--glass-shine), 0 0 20px rgba(180, 83, 9, 0.06);
+}
+
+html.dark .liquid-cta {
+  background: linear-gradient(
+    120deg,
+    rgba(180, 83, 9, 0.2),
+    rgba(100, 116, 139, 0.14),
+    rgba(68, 64, 60, 0.4)
+  );
+}
